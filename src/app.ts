@@ -47,7 +47,13 @@ app.post(
       console.log("Object File:", objectFile);
 
       // Generate live URL for the source file
-      const sourceFileUrl = `http://localhost:3002/src/uploads/${sourceFile.filename}`;
+      //   const sourceFileUrl = `http://localhost:3002/src/uploads/${sourceFile.filename}`;
+
+      // Generate live URL for the source file dynamically
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      const sourceFileUrl = `${baseUrl}/src/uploads/${sourceFile.filename}`;
+
+      console.log("sourceFileUrl", sourceFileUrl);
 
       // Read object file
       const objectFilePath = path.join(
