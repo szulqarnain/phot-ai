@@ -51,7 +51,7 @@ app.post(
 
       // Generate live URL for the source file dynamically
       const baseUrl = `${req.protocol}://${req.get("host")}`;
-      const sourceFileUrl = `${baseUrl}/src/uploads/${sourceFile.filename}`;
+      const sourceFileUrl = `${baseUrl}/uploads/${sourceFile.filename}`;
 
       console.log("sourceFileUrl", sourceFileUrl);
 
@@ -77,6 +77,23 @@ app.post(
     }
   }
 );
+
+// GET endpoint to retrieve a specific file by name
+app.get("/uploads/:filename", (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, "uploads", filename);
+  // Check if the file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(404).send("File not found.");
+      return;
+    }
+    // Stream the file back to the client
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
